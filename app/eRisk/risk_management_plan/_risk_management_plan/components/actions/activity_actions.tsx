@@ -45,7 +45,7 @@ export const ActivitiesActions = ({
         text="View"
       />
       <BaseActionItem icon={<Edit size={16} />} text="Edit" />
-      <AssignActivityOwners>
+      <AssignActivityOwners activityId={activityId}>
         <BaseActionItem icon={<UsersIcon size={16} />} text="Assign Leads"/>
       </AssignActivityOwners>
       <BaseActionItem icon={<Trash size={16} />} text="Delete" />

@@ -13,9 +13,7 @@ interface RiskResponseActionsProps {
 
 export const RiskResponseActions = ({
   children,
-  risk_id,
 }: RiskResponseActionsProps) => {
-  console.log(risk_id);
 
   return (
     <BaseActions

@@ -10,7 +10,6 @@ import {
   Building,
   Calendar,
   CirclePlus,
-  CircleX,
   Menu,
   Shield,
 } from "lucide-react";
@@ -21,15 +20,18 @@ import { KRITable } from "../tables/kri_table";
 import { CreateRiskResponseAction } from "../components/risk_response-actions";
 import { RiskResponsesTable } from "../tables/responses_table";
 import { useFetchRiskResponses } from "@/lib/api/risk_responses_api";
-import {useFetchRisk} from "@/lib/api/risks_api";
+import {useFetchRisk, useFetchRiskOwners} from "@/lib/api/risks_api";
+import {
+    AssignRiskOwners
+} from "@/app/eRisk/risk_identification_assessment/_risk_identification_assessment/components/assign_risk_owners";
 
 export const Details = () => {
   const params = useSearchParams();
   const router = useRouter();
-
   const { data } = useFetchRisk(params.get("risk_id"))
-
+  const {data: riskOwners} = useFetchRiskOwners(params.get("risk_id"))
   const { data: responses } = useFetchRiskResponses(params.get("risk_id"));
+  console.log(riskOwners)
 
   return (
     <section>
@@ -117,136 +119,33 @@ export const Details = () => {
               </section>
             </section>
             <section id="body" className="overflow-y-auto px-1 flex-1">
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="hover:bg-secondary p-2 rounded-md">
-                <UserDetails
-                  action={
-                    <Button className="w-6 bg-transparent cursor-pointer h-6 flex  rounded-full text-red-800 hover:text-neutral-200">
-                      <CircleX size={16} />
-                    </Button>
-                  }
-                  showLowerSection={false}
-                />
-              </section>
+                {
+                    riskOwners && riskOwners.length > 0 ? (
+                        riskOwners.map((owner, index) => (
+                          <section key={index} className="bg-neutral-100 p-2 rounded-md">
+                            <UserDetails
+                                name={owner?.usr_name}
+                                email={owner?.email}
+                                image={owner?.image}
+                                status={owner?.status}
+                                isAction={false}
+                                showLowerSection={false}
+                            />
+                          </section>
+                        ))
+                    ) : (
+                        <section className="bg-neutral-50 h-full flex items-center justify-center border border-dashed border-gray-300 p-4 rounded-md text-gray-500 text-sm text-center">
+                            <section>
+                              <p>No owners added yet.</p>
+                              <AssignRiskOwners riskId={params.get("risk_id")}>
+                                <Button className="mt-2 px-4 font-normal py-2 bg-primary text-primary-foreground hover:bg-blue-600 rounded-full">
+                                    <CirclePlus size={16}/> Add Risk Owners
+                                </Button>
+                              </AssignRiskOwners>
+                            </section>
+                        </section>
+                    )
+                }
             </section>
           </section>
         </section>

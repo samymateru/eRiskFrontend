@@ -62,8 +62,6 @@ export const UserMultiSelector = ({
     );
   });
 
-  console.log(filteredUsers);
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -80,7 +78,7 @@ export const UserMultiSelector = ({
                   key={index}
                   name={user.name}
                   email={user.email}
-                  image={user.image ?? ""}
+                  image={user.image}
                   checked={selectedUsers.some((u) => u.email === user.email)}
                 />
               </section>

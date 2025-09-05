@@ -35,7 +35,6 @@ export const NewActivityOwnersSchema = z.object({
 
 
 
-
 export type NewActivityType = z.infer<typeof NewActivitySchema>;
 export type NewActivityOwnersType = z.infer<typeof NewActivityOwnersSchema>;
 export type ReadActivityType = z.infer<typeof ActivitySchema>;

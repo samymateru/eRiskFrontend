@@ -1,7 +1,4 @@
-import {
-    ReactNode,
-    useState
-} from "react";
+import {ReactNode, useState} from "react";
 import {
     Sheet,
     SheetContent,
@@ -13,36 +10,36 @@ import {
 import {UserMultiSelector} from "@/components/select/user_multi-select";
 import {Button} from "@/components/ui/button";
 import {SendHorizonal} from "lucide-react";
-import {APIRequestBuilder} from "@/components/forms/base-api-client";
-import {NewActivityOwnersType} from "@/lib/schemas/activity-schemas";
 import {UserType} from "@/lib/schemas/user";
-import {useMutation} from "@tanstack/react-query";
-import {useFetchModuleUsers} from "@/lib/api/users_api";
 import {useLocalStorage} from "@/lib/hooks/use-localstorage";
-import {
-    useFetchActivityOwners
-} from "@/lib/api/activities_api";
+import {useFetchModuleUsers} from "@/lib/api/users_api";
+import {NewActivityOwnersType} from "@/lib/schemas/activity-schemas";
+import {APIRequestBuilder} from "@/components/forms/base-api-client";
+import {NewRiskOwnersType} from "@/lib/schemas/risk-schemas";
+import {useMutation} from "@tanstack/react-query";
+import {useFetchRiskOwners} from "@/lib/api/risks_api";
 
-const users = []
-
-interface AssignActivityOwnersProps {
-    children: ReactNode;
-    activityId?: string;
+interface AssignRiskOwnersProps{
+    children?: ReactNode;
+    riskId: string;
 }
-export const AssignActivityOwners = ({children, activityId}:AssignActivityOwnersProps) => {
+
+const users = [];
+
+export const AssignRiskOwners = ({children, riskId}: AssignRiskOwnersProps) => {
     const [open, onOpenChange] = useState<boolean>();
-    const [owners, setOwners] = useState<UserType[]>([])
+    const [owners, setOwners] = useState<UserType[]>(users)
     const moduleId = useLocalStorage("module_id")
     const {data: allUsers} = useFetchModuleUsers(moduleId)
-    const {data: activityOwners} = useFetchActivityOwners(activityId)
+    const {data: riskOwners} = useFetchRiskOwners(riskId)
 
     const availableUsers = (allUsers ?? []).filter(user => {
-        return !(activityOwners ?? []).some(owner => owner.usr_id === user.user_id);
+        return !(riskOwners ?? []).some(owner => owner.usr_id === user.user_id);
     });
 
-    const mutationFn = async (data: NewActivityOwnersType) => {
-        return APIRequestBuilder.to<NewActivityOwnersType, unknown>(
-            `/activities/owners/${activityId}`,
+    const mutationFn = async (data: NewRiskOwnersType) => {
+        return APIRequestBuilder.to<NewRiskOwnersType, unknown>(
+            `/risks/owners/${riskId}`,
         )
             .withMethod("POST")
             .withToken()
@@ -51,12 +48,11 @@ export const AssignActivityOwners = ({children, activityId}:AssignActivityOwners
     };
 
     const { mutate } = useMutation({
-        mutationKey: ["assign_activity_owner", activityId],
+        mutationKey: ["assign_risk_owner", riskId],
         mutationFn: mutationFn,
     });
 
-
-    const onSubmit = () => {
+    const onRiskSubmit = () => {
         if(owners.length !== 0){
             const userIds: string[] = owners.map(user => user.user_id)
                 .filter((id): id is string => id !== undefined);
@@ -66,39 +62,38 @@ export const AssignActivityOwners = ({children, activityId}:AssignActivityOwners
             };
 
             mutate(ownersData, {
-              onSuccess: () => {
-                  onOpenChange(false)
-              },
-              onError: () => {
-                  onOpenChange(false)
-              },
+                onSuccess: () => {
+                    onOpenChange(false)
+                },
+                onError: () => {
+                    onOpenChange(false)
+                },
             });
 
         }
 
     }
 
-
-    return (
+    return(
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetTrigger asChild>{children}</SheetTrigger>
             <SheetContent className="rounded-lg top-0">
                 <SheetHeader className="flex flex-col mt-3">
                     <SheetTitle className="font-bold  text-[18px]">
-                        Activity Owners
+                        Risk Owners
                     </SheetTitle>
                     <SheetDescription>
-                        Engage users to keep track of the activity life cycle
+                        Engage users to keep track of the risk life cycle
                     </SheetDescription>
                     <section className="mt-4">
                         <UserMultiSelector
                             allUsers={availableUsers}
-                            title="Select Users"
+                            title="Select Risk Owners"
                             options={users}
                             onValueChange={(owners) => setOwners(owners)}
                         />
                         <section className="mt-4 flex items-center justify-end">
-                            <Button onClick={onSubmit} className="rounded-full w-[130px] cursor-pointer font-normal">
+                            <Button onClick={onRiskSubmit} className="rounded-full w-[130px] cursor-pointer font-normal">
                                 <SendHorizonal size={16}/>
                                 Submit
                             </Button>
@@ -107,5 +102,6 @@ export const AssignActivityOwners = ({children, activityId}:AssignActivityOwners
                 </SheetHeader>
             </SheetContent>
         </Sheet>
+
     )
 }

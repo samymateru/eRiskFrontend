@@ -9,9 +9,7 @@ interface RiskKRIActionsProps {
   risk_id: string;
 }
 
-export const RiskKRIActions = ({ children, risk_id }: RiskKRIActionsProps) => {
-  console.log(risk_id);
-
+export const RiskKRIActions = ({ children }: RiskKRIActionsProps) => {
   return (
     <BaseActions trigger={children} side="left" offset={90} text="KRI Actions">
       <BaseActionItem icon={<Eye size={16} />} text="KRI Details" />

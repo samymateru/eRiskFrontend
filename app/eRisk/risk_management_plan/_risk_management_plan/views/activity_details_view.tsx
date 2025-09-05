@@ -1,21 +1,22 @@
 "use client";
 import { Label } from "@/components/ui/label";
 import {
-  ArrowLeftCircle,
-  Calendar,
-  CircleCheck,
-  Menu,
-  Repeat2,
+    ArrowLeftCircle,
+    Calendar,
+    CircleCheck, CirclePlus,
+    Menu,
+    Repeat2,
 } from "lucide-react";
 import { UserDetails } from "@/components/shared/user-details";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useFetchSingleActivity } from "@/lib/api/activities_api";
+import {useFetchActivityOwners, useFetchSingleActivity} from "@/lib/api/activities_api";
 import { formatDate } from "@/lib/utils/datetime-formater";
 import {ActivityReportsTable} from "@/app/eRisk/risk_management_plan/_risk_management_plan/tables/activity_reports_table";
 import {useFetchModuleUser} from "@/lib/api/users_api";
 import {useLocalStorage} from "@/lib/hooks/use-localstorage";
 import {useEffect, useState} from "react";
+import {AssignActivityOwners} from "@/app/eRisk/risk_management_plan/_risk_management_plan/components/assign_activity_owners";
 
 export const ActivityDetailsView = () => {
   const router = useRouter();
@@ -24,6 +25,7 @@ export const ActivityDetailsView = () => {
   const params = useSearchParams();
 
   const { data } = useFetchSingleActivity(params.get("activity_id"));
+  const {data: activityOwners} = useFetchActivityOwners(params.get("activity_id"))
   const {data: user} = useFetchModuleUser(moduleId, userId)
 
   useEffect(() => {
@@ -83,33 +85,33 @@ export const ActivityDetailsView = () => {
             </section>
             {/* ------------------Leads List------------------ */}
             <section className="flex flex-col gap-1 py-1.5 px-2 overflow-y-auto h-[200px]">
-              <section className="bg-neutral-100 p-2 rounded-md">
-                <UserDetails
-                  name="Anna Richards"
-                  email="annarichards@gmail.com"
-                  image="https://i.pravatar.cc/150?img=32"
-                  isAction={false}
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="bg-neutral-100 p-2 rounded-md">
-                <UserDetails
-                  name="Samwel Materu"
-                  email="samymateru1999@gmail.com"
-                  image="https://i.pravatar.cc/150?img=65"
-                  isAction={false}
-                  showLowerSection={false}
-                />
-              </section>
-              <section className="bg-neutral-100 p-2 rounded-md">
-                <UserDetails
-                  name="Luck Dube"
-                  email="luckdube@gmail.com"
-                  image="https://i.pravatar.cc/150?img=64"
-                  isAction={false}
-                  showLowerSection={false}
-                />
-              </section>
+                {
+                    activityOwners && activityOwners.length > 0 ? (
+                        activityOwners.map((owner, index) => (
+                            <section key={index} className="bg-neutral-100 p-2 rounded-md">
+                                <UserDetails
+                                    name={owner?.usr_name}
+                                    email={owner?.email}
+                                    image={owner?.image}
+                                    status={owner?.status}
+                                    isAction={false}
+                                    showLowerSection={false}
+                                />
+                            </section>
+                        ))
+                    ) : (
+                        <section className="bg-neutral-50 h-full flex items-center justify-center border border-dashed border-gray-300 p-4 rounded-md text-gray-500 text-sm text-center">
+                            <section>
+                              <p>No owners added yet.</p>
+                              <AssignActivityOwners activityId={params.get("activity_id")}>
+                                <Button className="mt-2 px-4 font-normal py-2 bg-primary text-primary-foreground hover:bg-blue-600 rounded-full">
+                                  <CirclePlus size={16}/> Add Activity Leads
+                                </Button>
+                              </AssignActivityOwners>
+                            </section>
+                        </section>
+                    )
+                }
             </section>
           </section>
         </section>

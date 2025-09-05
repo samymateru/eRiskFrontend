@@ -34,5 +34,10 @@ export const NewRiskSchema = z.object({
   inherent_level: z.number(),
 });
 
+export const NewRiskOwnersSchema = z.object({
+    owners: z.array(z.string())
+})
+
 export type NewRiskType = z.infer<typeof NewRiskSchema>;
+export type NewRiskOwnersType = z.infer<typeof NewRiskOwnersSchema>;
 export type ReadRiskType = z.infer<typeof ReadRiskSchema>;

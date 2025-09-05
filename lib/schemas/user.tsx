@@ -38,3 +38,4 @@ export const NewUserSchema = z.object({
 
 export type ReadUserType = z.infer<typeof UserDetailsSchema>;
 export type NewUserType = z.infer<typeof NewUserSchema>;
+export type ReadCreator = z.infer<typeof CreatorSchema>
