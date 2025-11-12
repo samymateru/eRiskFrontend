@@ -130,7 +130,7 @@ export const UserMultiSelector = ({
 interface UserItemProps {
   name: string;
   email: string;
-  image: string;
+  image? : string;
   checked: boolean;
   onClick?: () => void;
 }

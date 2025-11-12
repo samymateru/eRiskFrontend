@@ -21,12 +21,13 @@ interface BaseDatePickerProps<
   id?: Path<TData>;
   label?: string;
   error?: TError;
+  onDateChange?: (date?: Date) => void
 }
 
 export function BaseDatePicker<
   TData extends FieldValues,
   TError extends FieldErrors
->({ label, id, error }: BaseDatePickerProps<TData, TError>) {
+>({ label, id, error, onDateChange }: BaseDatePickerProps<TData, TError>) {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(undefined);
 
@@ -53,6 +54,7 @@ export function BaseDatePicker<
             captionLayout="dropdown"
             onSelect={(date) => {
               setDate(date);
+              onDateChange?.(date);
               setOpen(false);
             }}
           />

@@ -9,7 +9,7 @@ import { Profile } from "./profile";
 
 export const SystemHeader = () => {
   return (
-    <section className="px-2 py-2 shadow-neutral-200 shadow-md flex items-center justify-between">
+    <section className="px-2 py-2 shadow-neutral-200- shadow-md- flex items-center justify-between">
       <section id="logo" className="flex items-center gap-1 flex-1/2">
         {/* Logo content */}
         <Avatar className="w-10 h-10">

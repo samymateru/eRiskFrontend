@@ -9,25 +9,80 @@ import {
 } from "@/components/ui/table";
 
 import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
+    ColumnDef,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getSortedRowModel,
+    useReactTable,
 } from "@tanstack/react-table";
+import {cn} from "@/lib/utils";
+import {
+    ReactNode,
+    useEffect,
+    useRef,
+    useState
+} from "react";
+import {Label} from "@/components/ui/label";
 
 interface BaseTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
+  height?: string,
+  onSelectionChange?: (selectedIds: string[]) => void;
+  getRowId?: (row: TData) => string;
+  groupColumn?: string,
+  emptyTable?: ReactNode
+
 }
 
-export const BaseTable = <TData,>({ data, columns }: BaseTableProps<TData>) => {
-  const table = useReactTable({
+
+export const BaseTable = <TData,>({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+    height = "200px",
+    onSelectionChange,
+    getRowId,
+    emptyTable = <Label>No Results</Label>
+}: BaseTableProps<TData>) => {
+    const [rowSelection, setRowSelection] = useState({});
+    const prevIds = useRef<string[]>([]);
+    const table = useReactTable({
+        data,
+        columns,
+        state: {
+            rowSelection,
+        },
+        enableRowSelection: true,
+        onRowSelectionChange: setRowSelection,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+    });
+
+    useEffect(() => {
+        if (!onSelectionChange || !getRowId) return;
+
+        const selectedIds = table.getSelectedRowModel().rows.map((row) =>
+            getRowId(row.original)
+        );
+
+        const isEqual =
+            selectedIds.length === prevIds.current.length &&
+            selectedIds.every((id, i) => id === prevIds.current[i]);
+
+        if (!isEqual) {
+            onSelectionChange(selectedIds);
+            prevIds.current = selectedIds;
+        }
+    }, [rowSelection, onSelectionChange, getRowId, table]);
+
   return (
-  <div className="[&>div]:max-h-[calc(100svh-200px)]">
+  <div className={cn(
+      "w-full",
+      height === "208" ?  "[&>div]:max-h-[calc(100svh-208px)]" :
+          height === "185" ? "[&>div]:max-h-[calc(100svh-185px)]" : "[&>div]:max-h-[calc(100svh-200px)]"
+  )}>
     <Table className="[&_td]:border-border [&_th]:border-border border-separate border-spacing-0 [&_tfoot_td]:border-t [&_th]:border-b [&_tr]:border-none [&_tr:not(:last-child)_td]:border-b">
       <TableHeader className="bg-primary text-primary-foreground sticky top-0 z-10">
         {table.getHeaderGroups().map((headerGroup) => (
@@ -63,7 +118,7 @@ export const BaseTable = <TData,>({ data, columns }: BaseTableProps<TData>) => {
 
             return (
               <TableRow
-                className="odd:bg-blue-100 even:bg-blue-200 hover:bg-blue-300"
+                className={"bg-blue-50 hover:bg-blue-50"}
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}>
                 {cells.map((cell, cellIndex) => {
@@ -80,7 +135,7 @@ export const BaseTable = <TData,>({ data, columns }: BaseTableProps<TData>) => {
                   return (
                     <TableCell
                       key={cell.id}
-                      className={`max-w-[350px] p-2 ${cornerClass}`}>
+                      className={`max-w-[350px] align-top h-full p-2 ${cornerClass}`}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -92,9 +147,11 @@ export const BaseTable = <TData,>({ data, columns }: BaseTableProps<TData>) => {
             );
           })
         ) : (
-          <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
-              No results.
+          <TableRow className={"w-full relative"}>
+            <TableCell colSpan={10} className=" h-24 w-full">
+                <section className={"w-fit mx-auto"}>
+                    {emptyTable}
+                </section>
             </TableCell>
           </TableRow>
         )}

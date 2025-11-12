@@ -17,24 +17,24 @@ import {useFetchModuleUser} from "@/lib/api/users_api";
 import {useLocalStorage} from "@/lib/hooks/use-localstorage";
 import {useEffect, useState} from "react";
 import {AssignActivityOwners} from "@/app/eRisk/risk_management_plan/_risk_management_plan/components/assign_activity_owners";
+import {
+    ActivitiesActions
+} from "@/app/eRisk/risk_management_plan/_risk_management_plan/components/actions/activity_actions";
 
 export const ActivityDetailsView = () => {
   const router = useRouter();
   const moduleId = useLocalStorage("module_id")
   const [userId, setUserId] = useState<string | null>(null);
   const params = useSearchParams();
-
   const { data } = useFetchSingleActivity(params.get("activity_id"));
   const {data: activityOwners} = useFetchActivityOwners(params.get("activity_id"))
   const {data: user} = useFetchModuleUser(moduleId, userId)
 
   useEffect(() => {
     if(data){
-      setUserId(data.creator)
+      setUserId(data?.creator)
     }
   }, [data]);
-
-
 
 
   return (
@@ -52,10 +52,12 @@ export const ActivityDetailsView = () => {
             </Button>
           </section>
           <section>
-            <Button className="h-8 font-medium text-xs flex items-center justify-center w-[120px] cursor-pointer rounded-full">
-              <Menu size={16} />
-              Options
-            </Button>
+            <ActivitiesActions showView={false} side={"bottom"} activityId={params.get("activity_id")}>
+              <Button className="h-8 font-medium text-xs flex items-center justify-center w-[120px] cursor-pointer rounded-full">
+                  <Menu size={16} />
+                  Options
+              </Button>
+            </ActivitiesActions>
           </section>
         </section>
       </section>
@@ -81,19 +83,19 @@ export const ActivityDetailsView = () => {
           {/* -----------------right------------------------- */}
           <section id="right" className="flex flex-col gap-1 flex-1">
             <section>
-              <Label className="font-medium tex-[14px">Activity Leads</Label>
+              <Label className="font-medium tex-[14px] pl-2">Activity Leads</Label>
             </section>
             {/* ------------------Leads List------------------ */}
             <section className="flex flex-col gap-1 py-1.5 px-2 overflow-y-auto h-[200px]">
                 {
-                    activityOwners && activityOwners.length > 0 ? (
-                        activityOwners.map((owner, index) => (
+                    activityOwners && activityOwners?.length > 0 ? (
+                        activityOwners?.map((owner, index) => (
                             <section key={index} className="bg-neutral-100 p-2 rounded-md">
                                 <UserDetails
                                     name={owner?.usr_name}
-                                    email={owner?.email}
-                                    image={owner?.image}
-                                    status={owner?.status}
+                                    email={owner?.usr_email}
+                                    image={owner?.usr_image}
+                                    status={owner?.usr_status}
                                     isAction={false}
                                     showLowerSection={false}
                                 />

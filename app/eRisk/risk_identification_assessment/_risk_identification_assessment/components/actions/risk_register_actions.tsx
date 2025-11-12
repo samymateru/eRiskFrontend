@@ -14,7 +14,7 @@ export const RegisterActions = ({ children }: RegisterActionsProps) => {
   return (
     <BaseActions
       side="bottom"
-      sideOffset="-10"
+      sideOffset="10"
       trigger={children}
       tooltip="Risk Register"
       text="Risk Register Actions">

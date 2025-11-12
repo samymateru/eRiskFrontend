@@ -23,11 +23,11 @@ import {
     useFetchActivityOwners
 } from "@/lib/api/activities_api";
 
-const users = []
+const users: UserType[] = []
 
 interface AssignActivityOwnersProps {
     children: ReactNode;
-    activityId?: string;
+    activityId?: string | null;
 }
 export const AssignActivityOwners = ({children, activityId}:AssignActivityOwnersProps) => {
     const [open, onOpenChange] = useState<boolean>();
@@ -37,7 +37,7 @@ export const AssignActivityOwners = ({children, activityId}:AssignActivityOwners
     const {data: activityOwners} = useFetchActivityOwners(activityId)
 
     const availableUsers = (allUsers ?? []).filter(user => {
-        return !(activityOwners ?? []).some(owner => owner.usr_id === user.user_id);
+        return !(activityOwners ?? []).some(owner => owner.usr_id === user?.user_id);
     });
 
     const mutationFn = async (data: NewActivityOwnersType) => {

@@ -12,7 +12,7 @@ interface StatusBadgeProps {
 }
 export default function StatusBadge({ title }: StatusBadgeProps) {
   return (
-    <Badge variant="outline" className="gap-1.5">
+    <Badge style={{borderColor: badgeColors[title]}} variant="outline" className="gap-1.5 rounded-full px-3">
       <span
         className={`size-2.5 rounded-full ${badgeColors[title]}`}
         aria-hidden="true"></span>

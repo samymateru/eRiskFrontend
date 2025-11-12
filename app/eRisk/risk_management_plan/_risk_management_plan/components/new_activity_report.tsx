@@ -18,7 +18,7 @@ import {
 
 interface NewActivityReportProps {
     children?: ReactNode;
-    activityId?: string;
+    activityId?: string | null;
 }
 
 export const NewActivityReport = ({children, activityId}: NewActivityReportProps) => {

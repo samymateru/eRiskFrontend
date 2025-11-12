@@ -3,7 +3,7 @@ import { RMPViewController } from "./_risk_management_plan/views/rmp_view_contro
 
 export default function RiskManagementPlanPage() {
   return (
-    <div className="w-full flex flex-col gap-5 mt-4">
+    <div className="w-full flex flex-col gap-5 mt-4 bg-white">
       <section className="flex items-center justify-between px-2">
         <section>
           <Label className="font-bold text-[18px]">Risk Management Plans</Label>

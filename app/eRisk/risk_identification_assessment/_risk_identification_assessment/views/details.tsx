@@ -1,39 +1,54 @@
 "use client";
-
 import { UserDetails } from "@/components/shared/user-details";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/utils/datetime-formater";
 import {
-  ArrowLeftCircle,
-  Building,
-  Calendar,
-  CirclePlus,
-  Menu,
-  Shield,
+    ArrowLeftCircle,
+    Building,
+    Calendar,
+    CirclePlus,
+    Menu,
+    Shield, User, Users,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ReactNode } from "react";
+import {
+    ReactNode,
+    useEffect,
+    useState
+} from "react";
 import { CreateKRIAction } from "../components/actions/kri_actions";
 import { KRITable } from "../tables/kri_table";
 import { CreateRiskResponseAction } from "../components/risk_response-actions";
 import { RiskResponsesTable } from "../tables/responses_table";
 import { useFetchRiskResponses } from "@/lib/api/risk_responses_api";
 import {useFetchRisk, useFetchRiskOwners} from "@/lib/api/risks_api";
-import {
-    AssignRiskOwners
-} from "@/app/eRisk/risk_identification_assessment/_risk_identification_assessment/components/assign_risk_owners";
+import {AssignRiskOwners} from "@/app/eRisk/risk_identification_assessment/_risk_identification_assessment/components/assign_risk_owners";
+import {RiskActions} from "@/app/eRisk/risk_identification_assessment/_risk_identification_assessment/components/actions/risk_actions";
+import {useFetchRiskKRI} from "@/lib/api/risk_kri_api";
+import {useFetchModuleUser} from "@/lib/api/users_api";
+import {useLocalStorage} from "@/lib/hooks/use-localstorage";
 
 export const Details = () => {
   const params = useSearchParams();
+  const moduleId = useLocalStorage("module_id");
+  const [userId, setUserId] = useState<string | undefined>(undefined);
   const router = useRouter();
   const { data } = useFetchRisk(params.get("risk_id"))
-  const {data: riskOwners} = useFetchRiskOwners(params.get("risk_id"))
+  const {data: riskOwners} = useFetchRiskOwners(params.get("risk_id"));
   const { data: responses } = useFetchRiskResponses(params.get("risk_id"));
-  console.log(riskOwners)
+  const { data: riskKRI } = useFetchRiskKRI(params.get("risk_id"))
+  const {data: user} = useFetchModuleUser(moduleId, userId)
 
-  return (
+  useEffect(() => {
+    if(data){
+        setUserId(data?.creator)
+    }
+  }, [data]);
+
+
+    return (
     <section>
       <section id="header">
         <section
@@ -47,14 +62,16 @@ export const Details = () => {
             </Button>
           </section>
           <section>
+          <RiskActions side={"bottom"} shoView={false} riskId={params.get("risk_id")}>
             <Button className="h-8 font-medium text-xs flex items-center justify-center w-[120px] cursor-pointer rounded-full">
               <Menu size={16} />
               Options
             </Button>
+          </RiskActions>
           </section>
         </section>
       </section>
-      <section className="overflow-y-auto h-[calc(100svh-156px)] flex flex-col gap-10">
+      <section className="overflow-y-auto h-[calc(100svh-174px)] py-3 flex flex-col gap-10">
         <section id="main" className="flex h-[calc(100svh-156px)] gap-4 mx-2">
           <section
             id="left"
@@ -100,11 +117,19 @@ export const Details = () => {
               {/* --------------------------Risk Creator-------------------------- */}
               <section className="rounded-md flex flex-col">
                 <section>
-                  <Label className="">Creator</Label>
+                  <Label className="font-semibold text-sm pl-1"><User size={16}/> Creator</Label>
                 </section>
                 <section>
                   <section className="mt-2 bg-secondary p-2 rounded-md">
-                    <UserDetails isAction={false} />
+                    <UserDetails
+                        name={user?.name}
+                        email={user?.email}
+                        status={user?.status}
+                        image={user?.image}
+                        role={user?.role}
+                        date={user?.created_at}
+                        isAction={false}
+                    />
                   </section>
                 </section>
               </section>
@@ -115,19 +140,19 @@ export const Details = () => {
           <section id="right" className=" flex-1 flex flex-col px-4 py-3 gap-2">
             <section id="header" className="flex items-center justify-between ">
               <section>
-                <Label>Owners</Label>
+                <Label className="font-semibold text-sm pl-1"><Users size={16}/> Owners</Label>
               </section>
             </section>
-            <section id="body" className="overflow-y-auto px-1 flex-1">
+            <section id="body" className="overflow-y-auto px-1 flex-1 flex flex-col gap-[2px]">
                 {
                     riskOwners && riskOwners.length > 0 ? (
                         riskOwners.map((owner, index) => (
                           <section key={index} className="bg-neutral-100 p-2 rounded-md">
                             <UserDetails
                                 name={owner?.usr_name}
-                                email={owner?.email}
-                                image={owner?.image}
-                                status={owner?.status}
+                                email={owner?.usr_email}
+                                image={owner?.usr_image}
+                                status={owner?.usr_status}
                                 isAction={false}
                                 showLowerSection={false}
                             />
@@ -149,41 +174,40 @@ export const Details = () => {
             </section>
           </section>
         </section>
-        <section id="tables" className="flex flex-col gap-8">
+        <section id="tables"  className="flex flex-col gap-8">
+        <section id="responses" className="px-2">
           {/* ------------------------------KRI Review---------------------- */}
-          <section id="KRI" className="px-2">
             <Tables
-              title="KRI Review"
-              actions={
-                <section className="flex items-center gap-1.5">
-                  <CreateKRIAction risk_id={params.get("risk_id")}>
-                    <Button
-                      variant={"outline"}
-                      className="h-8 rounded-full border-neutral-400 border w-[120px] text-sm font-normal cursor-pointer">
-                      <CirclePlus size={16} /> New KRI
-                    </Button>
-                  </CreateKRIAction>
-                </section>
-              }
-              data={<KRITable risk_id={params.get("risk_id")} />}
+                title="Risk Responses"
+                actions={
+                    <section className="flex items-center gap-1.5">
+                        <CreateRiskResponseAction risk_id={params.get("risk_id")}>
+                            <Button
+                                variant={"outline"}
+                                className="h-8 rounded-full border-neutral-400 border w-[120px] text-sm font-normal cursor-pointer">
+                                <CirclePlus size={16} /> Response
+                            </Button>
+                        </CreateRiskResponseAction>
+                    </section>
+                }
+                data={<RiskResponsesTable data={responses} />}
             />
           </section>
-          {/* --------------Risk Responses-------------------------------------- */}
-          <section id="responses" className="px-2">
+          <section id="KRI" className="px-2">
             <Tables
-              title="Risk Responses"
-              actions={
-                <section className="flex items-center gap-1.5">
-                  <CreateRiskResponseAction risk_id={params.get("risk_id")}>
-                    <Button
-                      variant={"outline"}
-                      className="h-8 rounded-full border-neutral-400 border w-[120px] text-sm font-normal cursor-pointer">
-                      <CirclePlus size={16} /> Response
-                    </Button>
-                  </CreateRiskResponseAction>
-                </section>
-              }
-              data={<RiskResponsesTable data={responses} />}
+                title="KRI Review"
+                actions={
+                    <section className="flex items-center gap-1.5">
+                        <CreateKRIAction risk_id={params.get("risk_id")}>
+                            <Button
+                                variant={"outline"}
+                                className="h-8 rounded-full border-neutral-400 border w-[120px] text-sm font-normal cursor-pointer">
+                                <CirclePlus size={16} /> New KRI
+                            </Button>
+                        </CreateKRIAction>
+                    </section>
+                }
+                data={<KRITable data={riskKRI} />}
             />
           </section>
         </section>
@@ -229,7 +253,7 @@ const RiskDepartment = ({
           <Building size={16} />
         </section>
         <section>
-          <Label>{department}</Label>
+          <Label className="font-normal text-sm">{department}</Label>
         </section>
       </section>
       <section className="flex items-center gap-1.5">
@@ -237,7 +261,7 @@ const RiskDepartment = ({
           <Shield size={16} />
         </section>
         <section>
-          <Label>{category}</Label>
+          <Label className="font-normal text-sm">{category}</Label>
         </section>
       </section>
       <section className="flex items-center gap-1.5">
@@ -245,7 +269,7 @@ const RiskDepartment = ({
           <Calendar size={16} />
         </section>
         <section>
-          <Label>{formatDate(created_at)}</Label>
+          <Label className="font-normal text-sm">{formatDate(created_at)}</Label>
         </section>
       </section>
     </section>
@@ -266,7 +290,7 @@ const RiskRating = ({ title, impact, likelihood }: RiskRatingProps) => {
           <Label className="font-bold text-base">{impact}</Label>
         </section>
         <section>
-          <Label>Impact</Label>
+          <Label className="font-normal text-sm">Impact</Label>
         </section>
       </section>
       <section className="flex items-center gap-1.5">
@@ -274,7 +298,7 @@ const RiskRating = ({ title, impact, likelihood }: RiskRatingProps) => {
           <Label className="font-bold text-base">{likelihood}</Label>
         </section>
         <section>
-          <Label>Likelihood</Label>
+          <Label className="font-normal text-sm">Likelihood</Label>
         </section>
       </section>
       <section className="flex items-center gap-1.5">
@@ -284,7 +308,7 @@ const RiskRating = ({ title, impact, likelihood }: RiskRatingProps) => {
           </Label>
         </section>
         <section>
-          <Label>{"low"}</Label>
+          <Label className="font-normal text-sm">{"low"}</Label>
         </section>
       </section>
     </section>
@@ -326,15 +350,15 @@ export const RiskGeneralDetails = ({
         </section>
       </section>
       <section>
-        <Label className="text-sm font-medium opacity-90">{description}</Label>
+        <Label className="text-sm font-medium opacity-90 py-2">{description}</Label>
       </section>
-      <section className="flex items-center h-5 py-1">
+      <section className="flex items-center h-5 py-5">
         <section>
-          <Label className="font-semibold text-sm">{process}</Label>
+          <Label className="font-semibold text-sm">{process} :</Label>
         </section>
-        <Separator orientation="vertical" className="mx-2 bg-neutral-700" />
+        <Separator orientation="vertical" className="mx-2 h-[30px] bg-neutral-700" />
         <section>
-          <Label className="font-semibold text-sm">{sub_process}</Label>
+          <Label className="font-normal text-sm">{sub_process}</Label>
         </section>
       </section>
     </section>

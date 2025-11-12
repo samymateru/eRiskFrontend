@@ -1,4 +1,4 @@
-export const frequency = [
+export const frequencyOptions = [
   {
     label: "Daily",
     value: "Daily",
@@ -16,11 +16,11 @@ export const frequency = [
     value: "Monthly",
   },
   {
-    label: "Quaterly",
+    label: "Quarterly",
     value: "Quarterly",
   },
   {
-    label: "Semi Annualy",
+    label: "Semi Annually",
     value: "Semi Annually",
   },
   {
@@ -29,7 +29,7 @@ export const frequency = [
   },
   {
     label: "Specific Date",
-    value: "specific_date",
+    value: "Specific Date",
   },
 ];
 
@@ -52,6 +52,10 @@ export const departments = [
   {
     label: "Human Resources",
     value: "Human Resources",
+  },
+  {
+    label: "Finance",
+    value: "Finance",
   },
 ];
 
@@ -114,3 +118,27 @@ export const user_roles = [
         value: "Compliance Manager",
     },
 ];
+
+export const thresholdColors = {
+    Low: {
+        color: "bg-green-500",
+        bgColor: "bg-green-200",
+    },
+    Medium: {
+        color: "bg-yellow-500",
+        bgColor: "bg-yellow-200",
+    },
+    High: {
+        color: "bg-amber-400",
+        bgColor: "bg-amber-200",
+    },
+    "Very High": {
+        color: "bg-red-400",
+        bgColor: "bg-red-200",
+    },
+    "undefined": {
+        color: "bg-neutral-400",
+        bgColor: "bg-neutral-200",
+    },
+};
+

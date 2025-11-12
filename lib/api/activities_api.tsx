@@ -22,7 +22,7 @@ export const useFetchSingleActivity = (activityId?: string | null) => {
 export const useFetchActivityOwners = (activityId?: string | null) => {
     return useModularQuery(
         ["fetch_risk_owners", activityId],
-        () => fetchData<ReadCreator>(`/activities/owners/${activityId}`),
+        () => fetchData<ReadCreator[]>(`/activities/owners/${activityId}`),
         !!activityId
     );
 };

@@ -1,6 +1,5 @@
-import {
-    APIRequestBuilder
-} from "@/components/forms/base-api-client";
+import {APIRequestBuilder} from "@/components/forms/base-api-client";
+const BASE_URL = process.env.NEXT_PUBLIC_API_EXTERNAL_URL || "https://your-api.com";
 
 export async function fetchData<T>(url: string): Promise<T> {
     return await APIRequestBuilder.to<undefined, T>(url)
@@ -12,7 +11,7 @@ export async function fetchData<T>(url: string): Promise<T> {
 export async function fetchDataExternal<T>(url: string): Promise<T> {
     return await APIRequestBuilder.to<undefined, T>(
       url,
-      "http://localhost:8000"
+      `${BASE_URL}`
   )
       .withMethod("GET")
       .withToken()

@@ -10,7 +10,7 @@ export const UserStat = ({}: UserStatProps) => {
   return (
     <section
       id="main"
-      className="bg-indigo-300 h-full rounded-lg flex flex-col">
+      className="bg-indigo-200 h-full rounded-lg flex flex-col">
       <section id="header" className="flex items-center pl-2 pt-1">
         <User size={16} />
         <Label className="font-semibold text-sm pl-2">Users</Label>

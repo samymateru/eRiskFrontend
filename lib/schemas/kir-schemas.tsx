@@ -28,10 +28,14 @@ export const NewKRISchema = z.discriminatedUnion("type", [
 ]);
 
 export const ReadKRISchema = z.object({
+  risk_kri_id: z.string(),
   name: z.string(),
   type: z.string(),
+  risk_id: z.string(),
+  risk_name: z.string(),
   description: z.string(),
   frequency: z.string(),
+  next_reference: z.date(),
   specific_date: z.date().optional(),
   very_high: z.string(),
   high: z.string(),
@@ -40,6 +44,13 @@ export const ReadKRISchema = z.object({
   next_at: z.date(),
   created_at: z.date(),
 });
+
+export type ThresholdType = {
+    low?: string
+    medium?: string;
+    high?: string;
+    very_high?: string
+}
 
 export type NewKRIType = z.infer<typeof NewKRISchema>;
 export type ReadKRIType = z.infer<typeof ReadKRISchema>;

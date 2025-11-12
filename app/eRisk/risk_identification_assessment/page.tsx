@@ -1,9 +1,9 @@
 import { Label } from "@/components/ui/label";
-import { RiskAssessmentViewContoller } from "./_risk_identification_assessment/views/view-controller";
+import { RiskAssessmentViewController } from "./_risk_identification_assessment/views/view-controller";
 
 export default function RiskIdentificationPage() {
   return (
-    <div className="w-full flex flex-col gap-5 mt-4">
+    <div className="w-full flex flex-col gap-5 mt-4 px-2">
       <section className="flex items-center justify-between px-2">
         <Label className="font-bold text-[18px]">
           Risk Identification and Assessment
@@ -19,7 +19,7 @@ export default function RiskIdentificationPage() {
           </section>
         </section>
       </section>
-      <RiskAssessmentViewContoller />
+      <RiskAssessmentViewController />
     </div>
   );
 }

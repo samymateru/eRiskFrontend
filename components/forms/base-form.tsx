@@ -24,6 +24,7 @@ interface BaseFormProps<TData extends FieldValues, TResponse, TPayload> {
   optionalPayLoad?: TPayload;
   primaryButtonText?: string;
   secondaryButtonText?: string;
+  showSubmit?: boolean;
 }
 
 export const BaseForm = <TData extends FieldValues, TResponse, TPayload>({
@@ -39,6 +40,7 @@ export const BaseForm = <TData extends FieldValues, TResponse, TPayload>({
   optionalPayLoad,
   primaryButtonText = "Submit",
   secondaryButtonText = "Next",
+  showSubmit = true
 }: BaseFormProps<TData, TResponse, TPayload>) => {
   const queryClient = useQueryClient();
 
@@ -75,7 +77,7 @@ export const BaseForm = <TData extends FieldValues, TResponse, TPayload>({
     <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit(onSubmit)}
-        className="flex flex-col gap-8">
+        className="flex flex-col gap-5">
         <section className="flex flex-col w-full gap-4 px-1">
           {children}
         </section>
@@ -91,14 +93,18 @@ export const BaseForm = <TData extends FieldValues, TResponse, TPayload>({
             </section>
           ) : null}
           <section className="w-[250px]">
-            <Button
-              type="submit"
-              // onClick={() => handleSuccess?.("")}
-              disabled={isPending}
-              className="w-full rounded-full cursor-pointer">
-              <SendHorizonal size={16} />
-              {isPending ? "Submitting..." : primaryButtonText}
-            </Button>
+              {
+                  showSubmit && (
+                      <Button
+                          type="submit"
+                          // onClick={() => handleSuccess?.("")}
+                          disabled={isPending}
+                          className="w-full rounded-full cursor-pointer">
+                          <SendHorizonal size={16} />
+                          {isPending ? "Submitting..." : primaryButtonText}
+                      </Button>
+                  )
+              }
           </section>
         </section>
       </form>

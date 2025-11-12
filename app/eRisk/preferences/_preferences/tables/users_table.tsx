@@ -59,7 +59,7 @@ const columns: ColumnDef<ReadUserType>[] = [
         cell: ({row}) => (
             <TableHeaderCell
                 align="center"
-                className=""
+                className="px-2"
                 leadingIcon={<Label
                     className="bg-primary text-primary-foreground font-medium text-[13px] w-[50px] flex items-center justify-center rounded-full px-7 py-[1px]">{row.original.type}</Label>}
             ></TableHeaderCell>
@@ -67,15 +67,15 @@ const columns: ColumnDef<ReadUserType>[] = [
     },
     {
         header: () => (
-            <TableHeaderCell leadingIcon={<Shield size={16}/>} align="center">
+            <TableHeaderCell leadingIcon={<Shield size={16}/>} align="left">
                 Role
             </TableHeaderCell>
         ),
         accessorKey: "role",
         cell: ({row}) => (
             <TableHeaderCell
-                align="center"
-                className=""
+                align="left"
+                className="font-normal"
             >{row.original.role}</TableHeaderCell>
         ),
     },

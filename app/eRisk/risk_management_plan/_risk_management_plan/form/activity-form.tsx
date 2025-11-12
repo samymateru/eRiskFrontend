@@ -9,7 +9,11 @@ import {
   NewActivitySchema,
   NewActivityType,
 } from "@/lib/schemas/activity-schemas";
-import { activityTypes, category, frequency } from "@/lib/utils/constants";
+import {
+    activityTypes,
+    category,
+    frequencyOptions
+} from "@/lib/utils/constants";
 import { BaseSelectField } from "@/components/select/base-select-field";
 
 interface ActivityFormProps<TData extends FieldValues, TResponse> {
@@ -102,7 +106,7 @@ export const ActivityForm = <TData extends FieldValues, TResponse>({
           className="flex-1"
           id={"frequency" as import("react-hook-form").Path<TData>}
           label="Frequency"
-          options={frequency}
+          options={frequencyOptions}
           setValue={methods.setValue}
           error={methods.formState.errors}
           open={openSelect === "frequency"}

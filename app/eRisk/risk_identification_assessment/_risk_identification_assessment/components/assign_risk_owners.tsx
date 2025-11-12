@@ -21,10 +21,10 @@ import {useFetchRiskOwners} from "@/lib/api/risks_api";
 
 interface AssignRiskOwnersProps{
     children?: ReactNode;
-    riskId: string;
+    riskId?: string | null;
 }
 
-const users = [];
+const users: UserType[] = [];
 
 export const AssignRiskOwners = ({children, riskId}: AssignRiskOwnersProps) => {
     const [open, onOpenChange] = useState<boolean>();

@@ -51,11 +51,11 @@ export const BasicSideBar = () => {
   return (
     <section
       ref={sidebarRef}
-      className={`pt-1 flex flex-col  gap-3 transition-[width] duration-500 ease-[cubic-bezier(.68,-0.55,.27,1.55)] rounded-e-md shadow-neutral-500 shadow-md ${
+      className={`pt-1 flex flex-col  gap-3 transition-[width] bg-white duration-500 ease-[cubic-bezier(.68,-0.55,.27,1.55)] rounded-e-md shadow-neutral-500 shadow-md ${
         open ? "w-[56px]" : "w-[285px]"
-      } overflow-hidden z-[100] h-full bg-sidebar absolute top-0 left-0`}>
+      } overflow-hidden z-[100] h-full bg-white absolute top-0 left-0`}>
       <Button
-        className={`relative text-sidebar-foreground cursor-pointer hover:bg-neutral-300 bg-inherit w-[calc(40px-0px)] h-9 transition-all duration-500 ml-2`}
+        className={`relative  text-sidebar-foreground cursor-pointer hover:bg-neutral-300 bg-white w-[calc(40px-0px)] h-9 transition-all duration-500 ml-2`}
         onClick={() => setOpen((prev) => !prev)}>
         <X
           className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${
@@ -68,7 +68,7 @@ export const BasicSideBar = () => {
           }`}
         />
       </Button>
-      <section className="flex flex-col gap-0.5 justify-start items-center bg-sidebar h-[100%] px-1 w-full">
+      <section className="flex flex-col gap-0.5 justify-start items-center bg-white h-[100%] px-1 w-full">
         <SideBarItem
           icon={<Home className="mx-[4px]" />}
           show={open}
@@ -158,6 +158,10 @@ const SideBarItem = ({
       router.push(pathname + `?action=${"risk_list"}`);
       return;
     }
+    if (pathname === "/eRisk/risk_profile_reports") {
+          router.push(pathname + `?action=${"kri_review"}`);
+          return;
+    }
     router.push(pathname ?? "#");
   };
 
@@ -175,7 +179,7 @@ const SideBarItem = ({
         id={pathname}
         onClick={handleNavigation}
         className={`
-          cursor-pointer shadow-none bg-sidebar hover:bg-neutral-300 
+          cursor-pointer shadow-none bg-white hover:bg-neutral-300 
           p-2 relative text-sidebar-foreground justify-start 
           h-10 w-full
           ${
@@ -186,7 +190,7 @@ const SideBarItem = ({
         `}>
         {icon}
         <Label
-          className={` relative font-medium text-[14px] cursor-pointer pointer-events-none font-helvetica-13 overflow-hidden transition-all duration-300 ${
+          className={` relative font-normal text-[14px] cursor-pointer pointer-events-none font-helvetica-13 overflow-hidden transition-all duration-300 ${
             show ? "w-o" : "w-full"
           }`}>
           {text}

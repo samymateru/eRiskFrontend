@@ -1,15 +1,17 @@
 "use client";
-import {FieldValues, Path, UseFormReturn, UseFormSetValue} from "react-hook-form";
+import {FieldValues, Path, UseFormReturn} from "react-hook-form";
 import {BaseForm} from "@/components/forms/base-form";
 import {BaseInputField} from "@/components/inputs/base-input-field";
 import {BaseSelectField} from "@/components/select/base-select-field";
-import {frequency, kriTypes} from "@/lib/utils/constants";
+import {frequencyOptions, kriTypes} from "@/lib/utils/constants";
 import {BaseTextAreaField} from "@/components/inputs/base-textarea-field";
-import {KRISetter} from "../components/kri-threshold-setter";
-import {useEffect, useState} from "react";
-import {Input} from "@/components/ui/input";
+import {useState} from "react";
 import {Label} from "@/components/ui/label";
+import {MonthDateSelector} from "@/components/select/month_date_selector";
+import {WeekDaySelector} from "@/components/select/week_day_selector";
+import {Threshold} from "@/components/shared/threshold";
 import {BaseDatePicker} from "@/components/datepickers/base_datepicker";
+import {DateSelector} from "@/components/select/day_selector";
 
 interface KRIFormFormProps<TData extends FieldValues, TPayload, TResponse> {
     optionalPayLoad?: TPayload;
@@ -22,17 +24,19 @@ interface KRIFormFormProps<TData extends FieldValues, TPayload, TResponse> {
 }
 
 export const KRIForm = <TData extends FieldValues, TPayload, TResponse>({
-                                                                            onError,
-                                                                            onSuccess,
-                                                                            primaryButtonText,
-                                                                            secondaryButtonText,
-                                                                            methods,
-                                                                            mutationFn,
-                                                                        }: KRIFormFormProps<TData, TPayload, TResponse>) => {
+    onError,
+    onSuccess,
+    primaryButtonText,
+    secondaryButtonText,
+    methods,
+    mutationFn,
+    }: KRIFormFormProps<TData, TPayload, TResponse>) => {
     const [low, setLow] = useState("equals");
     const [medium, setMedium] = useState("equals");
     const [high, setHigh] = useState("equals");
     const [very_high, setVeryHigh] = useState("equals");
+    const [next_reference, setNextReference] = useState<Date | undefined>(undefined);
+    const [frequency_value, setFrequencyValue] = useState<number | undefined>(undefined)
 
     const handleSuccess = (data: TResponse) => {
         onSuccess?.(data);
@@ -50,7 +54,9 @@ export const KRIForm = <TData extends FieldValues, TPayload, TResponse>({
         "type" as import("react-hook-form").PathValue<TData, Path<TData>>
     );
 
-    console.log(methods.formState.errors);
+    const frequency = methods.watch(
+        "frequency" as import("react-hook-form").PathValue<TData, Path<TData>>
+    );
 
     return (
         <BaseForm<TData, TResponse, unknown>
@@ -62,6 +68,10 @@ export const KRIForm = <TData extends FieldValues, TPayload, TResponse>({
             handleSuccess={handleSuccess}
             handleError={handleError}
             isNext={false}
+            optionalPayLoad={{
+                frequency_value: frequency_value,
+                next_reference: next_reference
+            }}
             onSkip={handleSkip}>
             <section
                 className={`flex  ${
@@ -75,13 +85,13 @@ export const KRIForm = <TData extends FieldValues, TPayload, TResponse>({
                 } gap-12 px-5`}>
                 <section
                     id="left"
-                    className={` ${
+                    className={`transition-all duration-150 ease-in-out ${
                         type ===
                         ("Qualitative" as import("react-hook-form").PathValue<
                             TData,
                             Path<TData>
                         >)
-                            ? "w-[500px]"
+                            ? "w-[600px]"
                             : "flex-1/3"
                     }  flex flex-col gap-3`}>
                     <BaseInputField
@@ -95,7 +105,7 @@ export const KRIForm = <TData extends FieldValues, TPayload, TResponse>({
                             className="flex-1"
                             id={"frequency" as import("react-hook-form").Path<TData>}
                             label="KRI Frequency"
-                            options={frequency}
+                            options={frequencyOptions}
                             setValue={methods.setValue}
                             error={methods.formState.errors}
                             placeholder="Choose one"
@@ -114,7 +124,41 @@ export const KRIForm = <TData extends FieldValues, TPayload, TResponse>({
                         />
                     </section>
 
-                    <BaseDatePicker label="Specified Date"/>
+                    {["Weekly", "Bi Weekly"].includes(String(frequency)) && (
+                        <section className="flex flex-col gap-2 mb-1">
+                            <Label>
+                                Specify Week Day
+                            </Label>
+                            <WeekDaySelector onValueChange={(data) => setFrequencyValue(data)} />
+                        </section>
+                    )}
+
+                    {["Monthly"].includes(String(frequency)) && (
+                        <section className={"flex flex-col gap-2 mb-1"}>
+                            <Label>
+                                Specify Date
+                            </Label>
+                            <DateSelector onValueChange={(data) => setFrequencyValue(data)}/>
+                        </section>
+                    )}
+
+                    {["Annually", "Semi Annually", "Quarterly"].includes(String(frequency)) && (
+                        <section className={"flex flex-col gap-2 mb-1"}>
+                            <Label>
+                                Start Of The Year
+                            </Label>
+                            <MonthDateSelector onValueChange={(data) => setFrequencyValue(data)}/>
+                        </section>
+                    )}
+
+                    {["Specific Date"].includes(String(frequency)) && (
+                        <section className={"flex flex-col gap-2 mb-1"}>
+                            <Label>
+                                Specify Date
+                            </Label>
+                            <BaseDatePicker onDateChange={(date) => setNextReference(date)}/>
+                        </section>
+                    )}
 
                     {type ===
                     ("Qualitative" as import("react-hook-form").PathValue<
@@ -151,7 +195,7 @@ export const KRIForm = <TData extends FieldValues, TPayload, TResponse>({
                     TData,
                     Path<TData>
                 >) ? null : (
-                    <section className="flex-1/4 flex flex-col gap-4">
+                    <section className="flex-1/3 flex flex-col gap-4">
                         <section>
                             <Label className="font-semibold text-[18px] mt-2">
                                 KRI Thresholds
@@ -184,101 +228,3 @@ export const KRIForm = <TData extends FieldValues, TPayload, TResponse>({
     );
 };
 
-interface ThresholdProps<T extends FieldValues> {
-    id: Path<T>;
-    threshold: string;
-    setThreshold: (threshold: string) => void;
-    label: string;
-    setValue: UseFormSetValue<T>;
-}
-
-const Threshold = <T extends FieldValues>({threshold, setThreshold, label, setValue, id}: ThresholdProps<T>) => {
-    const [min, setMin] = useState<number>(0)
-    const [max, setMax] = useState<number>(0)
-    const [value_, setValue_] = useState<number>(0)
-
-    console.log(threshold)
-    useEffect(() => {
-        if (threshold === "between_inclusive") {
-            setValue(id, `${min}<=N>=${max}` as import("react-hook-form").PathValue<T, typeof id>, {
-                shouldValidate: true,
-            });
-        } else if (threshold === "between_exclusive") {
-            setValue(id, `${min}${'<'}N${'>'}${max}` as import("react-hook-form").PathValue<T, typeof id>, {
-                shouldValidate: true,
-            })
-        } else if (threshold === "equals") {
-            setValue(id, `N=${value_}` as import("react-hook-form").PathValue<T, typeof id>, {
-                shouldValidate: true,
-            })
-        } else if (threshold === "greater_than") {
-            setValue(id, `N>${value_}` as import("react-hook-form").PathValue<T, typeof id>, {
-                shouldValidate: true,
-            })
-
-        } else if (threshold === "less_than") {
-            setValue(id, `N<${value_}` as import("react-hook-form").PathValue<T, typeof id>, {
-                shouldValidate: true,
-            })
-        } else if (threshold === "greater_equal_to") {
-            setValue(id, `N>=${value_}` as import("react-hook-form").PathValue<T, typeof id>, {
-                shouldValidate: true,
-            })
-        } else if (threshold === "less_than_eqal") {
-            setValue(id, `N<=${value_}` as import("react-hook-form").PathValue<T, typeof id>, {
-                shouldValidate: true,
-            })
-
-        }
-
-    }, [min, max, value_, threshold, setValue, id])
-
-    return (
-        <section className="flex flex-col">
-            <section className="flex items-center gap-1">
-                <span className="flex w-3 h-3 bg-black"></span>
-                <Label className="text-[14px] mb-[2px]">{label}</Label>
-            </section>
-            <section className="flex items-center gap-5">
-                <KRISetter value={threshold} onChange={setThreshold}/>
-                {threshold === "between_inclusive" ||
-                threshold === "between_exclusive" ? (
-                    <section className="flex items-center gap-2">
-                        <div className="group relative flex-1">
-                            <label
-                                className="bg-background text-foreground absolute start-1 top-0 z-10 block -translate-y-1/2 px-2 text-xs font-medium group-has-disabled:opacity-50">
-                                Min
-                            </label>
-                            <Input onChange={(e) => {
-                                setMin(Number(e.target.value))
-                            }} className="h-10"
-                                   placeholder="Value of N"
-                                   type="text"/>
-                        </div>
-                        <div className="group relative flex-1">
-                            <label
-                                className="bg-background text-foreground absolute start-1 top-0 z-10 block -translate-y-1/2 px-2 text-xs font-medium group-has-disabled:opacity-50">
-                                Max
-                            </label>
-                            <Input onChange={(e) => {
-                                setMax(Number(e.target.value))
-                            }} className="h-10" placeholder="Value of N" type="text"/>
-                        </div>
-                    </section>
-                ) : (
-                    <section>
-                        <div className="group relative flex-1">
-                            <label
-                                className="bg-background text-foreground absolute start-1 top-0 z-10 block -translate-y-1/2 px-2 text-xs font-medium group-has-disabled:opacity-50">
-                                Value
-                            </label>
-                            <Input onChange={(e) => {
-                                setValue_(Number(e.target.value))
-                            }} className="h-10" placeholder="Value of N" type="text"/>
-                        </div>
-                    </section>
-                )}
-            </section>
-        </section>
-    );
-};

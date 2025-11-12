@@ -12,59 +12,97 @@ type UserDetailsType = z.infer<typeof UserDetailsSchema>;
 
 export const dummyUsers: UserDetailsType[] = [
   {
+    telephone: "",
+    created_at: new Date(),
+    user_id: "",
     name: "Alice Johnson",
     email: "alice.johnson@example.com",
     role: "Admin",
+    type: "Risk",
     date: new Date("2025-01-15"),
     image: "https://i.pravatar.cc/150?img=1",
   },
   {
+    telephone: "",
+    created_at: new Date(),
+    user_id: "",
     name: "Bob Smith",
     email: "bob.smith@example.com",
+    type: "Risk",
     role: "Editor",
     date: new Date("2025-03-22"),
     image: "https://i.pravatar.cc/150?img=2",
   },
-  {
-    name: "Carol Lee",
-    email: "carol.lee@example.com",
-    role: "Viewer",
-    date: new Date("2025-05-10"),
-    image: "https://i.pravatar.cc/150?img=3",
-  },
+    {
+        telephone: "",
+        created_at: new Date(),
+        user_id: "",
+        name: "Bob Smith",
+        email: "bob.smith@example.com",
+        type: "Risk",
+        role: "Editor",
+        date: new Date("2025-03-22"),
+        image: "https://i.pravatar.cc/150?img=2",
+    },
 ];
 
 export const risks: Array<ReadRiskType> = [
-  {
-    reference: "R-001",
-    category: "Operational",
-    name: "System Downtime",
-    impact: 8,
-    likelihood: 6,
-    inherent_level: "Medium",
-    residual_level: "Low",
-    owners: dummyUsers,
-  },
-  {
-    reference: "R-002",
-    category: "Financial",
-    name: "Budget Overrun",
-    impact: 7,
-    likelihood: 5,
-    inherent_level: "Medium",
-    residual_level: "High",
-    owners: dummyUsers,
-  },
-  {
-    reference: "R-003",
-    category: "Compliance",
-    name: "Regulatory Non-Compliance",
-    impact: 9,
-    likelihood: 4,
-    inherent_level: "Low",
-    residual_level: "Medium",
-    owners: dummyUsers,
-  },
+    {
+        reference: "R-001",
+        category: "Operational",
+        description: "",
+        name: "System Downtime",
+        status: "Draft",
+        inherent_impact: 8,
+        inherent_likelihood: 6,
+        inherent_level: "Medium",
+        residual_level: "Low",
+        owners: dummyUsers,
+        residual_impact: 0,
+        residual_likelihood: 0
+    },
+    {
+        reference: "R-002",
+        category: "Financial",
+        name: "Budget Overrun",
+        status: "Draft",
+        description: "",
+        inherent_impact: 8,
+        inherent_likelihood: 6,
+        inherent_level: "Medium",
+        residual_level: "High",
+        owners: dummyUsers,
+        residual_impact: 0,
+        residual_likelihood: 0
+    },
+    {
+        reference: "R-002",
+        category: "Financial",
+        name: "Budget Overrun",
+        status: "Draft",
+        description: "",
+        inherent_impact: 8,
+        inherent_likelihood: 6,
+        inherent_level: "Medium",
+        residual_level: "High",
+        owners: dummyUsers,
+        residual_impact: 0,
+        residual_likelihood: 0
+    },
+    {
+        reference: "R-002",
+        category: "Financial",
+        status: "Draft",
+        name: "Budget Overrun",
+        description: "",
+        inherent_impact: 8,
+        inherent_likelihood: 6,
+        inherent_level: "Medium",
+        residual_level: "High",
+        owners: dummyUsers,
+        residual_impact: 0,
+        residual_likelihood: 0
+    }
 ];
 
 const columns: ColumnDef<ReadRiskType>[] = [
@@ -108,17 +146,17 @@ const columns: ColumnDef<ReadRiskType>[] = [
   },
   {
     header: () => <TableHeaderCell align="center">Impact</TableHeaderCell>,
-    accessorKey: "impact",
+    accessorKey: "inherent_impact",
     cell: ({ row }) => (
-      <TableHeaderCell align="center">{row.getValue("impact")}</TableHeaderCell>
+      <TableHeaderCell align="center">{row.original.inherent_impact}</TableHeaderCell>
     ),
   },
   {
     header: () => <TableHeaderCell align="center">Likelihood</TableHeaderCell>,
-    accessorKey: "likehood",
+    accessorKey: "inherent_likelihood",
     cell: ({ row }) => (
       <TableHeaderCell align="center">
-        {row.getValue("likehood")}
+        {row.original.inherent_likelihood}
       </TableHeaderCell>
     ),
     meta: {

@@ -18,6 +18,7 @@ export const CreatorSchema = z.object({
 })
 
 export const UserDetailsSchema = z.object({
+  user_id: z.string(),
   name: z.string(),
   email: z.string(),
   role: z.string(),

@@ -8,6 +8,7 @@ import { UserStat } from "./_preferences/components/user_stat";
 import { RoleStat } from "./_preferences/components/role_stat";
 import { BinStat } from "./_preferences/components/bin_stat";
 import { NotificationStat } from "./_preferences/components/notification_stat";
+import {RoleTable} from "@/app/eRisk/preferences/_preferences/tables/roles_table";
 
 export default function PreferencePage() {
   return (
@@ -90,7 +91,7 @@ export default function PreferencePage() {
                         </section>
                     </section>
                     <section>
-                        <UserTable />
+                        <RoleTable/>
                     </section>
                 </section>
             </section>

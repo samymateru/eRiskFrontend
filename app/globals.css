@@ -4,11 +4,11 @@
 @custom-variant dark (&:is(.dark *));
 
 ::-webkit-scrollbar {
-  width: 7px;  /* or height for horizontal scroll */
+  width: 5px;  /* or height for horizontal scroll */
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(96, 16, 202, 0.5); /* Thumb color */
+  background-color: oklch(0.243 0.127 280.718); /* Thumb color */
   border-radius: 4px;                         /* Rounded edges */
 }
 
@@ -59,13 +59,15 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: rgb(255 255 255);
   --foreground: oklch(0.145 0 0);
   --card: oklch(88.2% 0.059 254.128);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.243 0.127 280.718);
+  --primary-light: oklch(0.243 0.127 280.718);
+  --primary-lighter: oklch(0.94 0.02 280.718);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(91.541% 0.01224 286.037);
   --secondary-foreground: oklch(0.27 0.00 0);

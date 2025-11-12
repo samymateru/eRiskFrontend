@@ -15,17 +15,17 @@ interface RMPActionsProps {
 export const RMPActions = ({ children }: RMPActionsProps) => {
   const moduleId = useLocalStorage("module_id");
   return (
-    <BaseActions trigger={children} tooltip="Risk Management Plan Activities">
+    <BaseActions side={"bottom"} sideOffset={"10"} trigger={children} tooltip="Risk Management Plan Activities">
       <NewActivity moduleId={moduleId}>
         <BaseActionItem icon={<CirclePlus size={16} />} text="New Activity" />
       </NewActivity>
       <NewRMP>
         <BaseActionItem icon={<Forward size={16} />} text="Roll Forward" />
       </NewRMP>
-      <BaseActionItem icon={<Download size={16} />} text="Export" />
       <AllRMPList>
         <BaseActionItem icon={<ScanSearch size={16} />} text="All RMP" />
       </AllRMPList>
+      <BaseActionItem icon={<Download size={16} />} text="Export" />
     </BaseActions>
   );
 };

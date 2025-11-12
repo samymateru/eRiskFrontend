@@ -11,6 +11,8 @@ export const NewRiskResponseSchema = z.object({
 export const ReadRiskResponseSchema = z.object({
   risk_response_id: z.string(),
   risk_id: z.string(),
+  name: z.string(),
+  description: z.string(),
   control: z.string(),
   objective: z.string(),
   type: z.string(),

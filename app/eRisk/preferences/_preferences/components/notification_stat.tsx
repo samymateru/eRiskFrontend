@@ -8,10 +8,10 @@ interface NotificationStatProps {
 
 export const NotificationStat = ({}: NotificationStatProps) => {
   return (
-    <section id="main" className="bg-blue-300 h-full rounded-lg flex flex-col">
+    <section id="main" className="bg-blue-200 h-full rounded-lg flex flex-col">
       <section id="header" className="flex items-center pl-2 pt-1">
         <BellDot size={16} />
-        <Label className="font-semibold text-sm pl-2">Nofications</Label>
+        <Label className="font-semibold text-sm pl-2">Notifications</Label>
       </section>
       <section id="body" className="flex items-center flex-1">
         <section id="right" className="flex flex-col flex-1">

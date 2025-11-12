@@ -1,7 +1,12 @@
 "use client";
 import SearchInput from "@/components/inputs/search-input";
 import { Button } from "@/components/ui/button";
-import { Funnel, Menu, Shield } from "lucide-react";
+import {
+    Calendar,
+    Funnel,
+    Menu, MessageCircleMore,
+    Shield, ShieldAlert
+} from "lucide-react";
 import { RegisterActions } from "./actions/risk_register_actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Label } from "@/components/ui/label";
@@ -42,10 +47,21 @@ export const ResponsesHeader = () => {
         <section id="view"></section>
         <section className="actions">
           <section className="flex items-center gap-2">
-            <Button onClick={handleClick} className="border-neutral-400 border rounded-full">
-              <Shield size={16} />Risks
-            </Button>
-            <RegisterActions>
+              <section className="bg-blue-200 px-2 py-1 flex items-center gap-1 rounded-lg">
+                  <Button variant={"default"} className="h-7 w-[100px] font-normal">
+                      <ShieldAlert size={16}/>
+                      Risks
+                  </Button>
+                  <Button variant={"outline"} className="h-7 w-[100px]">
+                      <MessageCircleMore size={16}/>
+                      Controls
+                  </Button>
+                  <Button variant={"outline"} className="h-7 w-[120px] px-2">
+                      <Calendar size={16}/>
+                      KRIs
+                  </Button>
+              </section>
+              <RegisterActions>
               <Button>
                 <Menu size={16} />
               </Button>

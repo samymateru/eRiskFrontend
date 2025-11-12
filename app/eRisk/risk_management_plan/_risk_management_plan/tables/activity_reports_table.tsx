@@ -5,17 +5,10 @@ import { TableHeaderCell } from "@/components/tables/table-header";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
-import { ActivitiesActions } from "../components/actions/activity_actions";
 import {ReadActivityReportType} from "@/lib/schemas/activity_reports_schemas";
-import {
-    useFetchAllActivityReports
-} from "@/lib/api/activity_reports_api";
-import {
-    formatDate
-} from "@/lib/utils/datetime-formater";
-import {
-    UserDetails
-} from "@/components/shared/user-details";
+import {useFetchAllActivityReports} from "@/lib/api/activity_reports_api";
+import {formatDate} from "@/lib/utils/datetime-formater";
+import {UserDetails} from "@/components/shared/user-details";
 
 const columns: ColumnDef<ReadActivityReportType>[] = [
     {
@@ -65,14 +58,12 @@ const columns: ColumnDef<ReadActivityReportType>[] = [
     {
         header: () => <TableHeaderCell align="center">Actions</TableHeaderCell>,
         accessorKey: "action",
-        cell: ({ row }) => (
+        cell: () => (
             <TableHeaderCell
                 leadingIcon={
-                    <ActivitiesActions activityId={row.original.activity_id ?? ""}>
                         <Button className="h-7 w-7 bg-secondary text-secondary-foreground hover:text-neutral-200 cursor-pointer">
                             <Ellipsis size={16} />
                         </Button>
-                    </ActivitiesActions>
                 }
                 align="center"
             />

@@ -8,7 +8,7 @@ interface RoleStatProps {
 
 export const RoleStat = ({}: RoleStatProps) => {
   return (
-    <section id="main" className="bg-pink-300 h-full rounded-lg flex flex-col">
+    <section id="main" className="bg-pink-200 h-full rounded-lg flex flex-col">
       <section id="header" className="flex items-center pl-2 pt-1">
         <Shield size={16} />
         <Label className="font-semibold text-sm pl-2">Roles</Label>

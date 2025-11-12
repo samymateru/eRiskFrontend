@@ -9,16 +9,70 @@ import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
 import { RiskActions } from "../components/actions/risk_actions";
 import { ThresholdLevel } from "@/lib/utils";
-import {
-    useFetchAllRisks
-} from "@/lib/api/risks_api";
+import {useFetchAllRisks} from "@/lib/api/risks_api";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Badge} from "@/components/ui/badge";
 
 const columns: ColumnDef<ReadRiskType>[] = [
+    {
+    id: "select",
+    header: ({ table }) => {
+
+        const eligibleRows = table.getRowModel().rows.filter(
+            (row) => row.original.status === 'Draft'
+        );
+
+        const allEligibleSelected = eligibleRows.length > 0 && eligibleRows.every(row => row.getIsSelected());
+        const someEligibleSelected = eligibleRows.some(row => row.getIsSelected());
+
+        return (
+            <TableHeaderCell
+                align="center"
+                leadingIcon={
+                    <Checkbox
+                        checked={allEligibleSelected}
+                        onCheckedChange={(value) => {
+                            eligibleRows.forEach(row => {
+                                row.toggleSelected(!!value);
+                            });
+                        }}
+                        aria-label="Select eligible rows"
+                        className={`w-[18px] h-[18px] rounded-full 
+                    ${allEligibleSelected ? "bg-green-800" : someEligibleSelected ? "bg-yellow-500" : "bg-neutral-500"}`}
+                    />
+                }
+            />
+        );
+    },
+    cell: ({ row }) => {
+        if (row.original.status === "Draft"){
+            return (
+              <TableHeaderCell align="center"
+                 leadingIcon={
+                   <Checkbox
+                     checked={row.getIsSelected()}
+                     onCheckedChange={(value) => {
+                         row.toggleSelected(!!value);
+                     }}
+                     aria-label="Select row"
+                     className={"w-[18px] rounded-full h-[18px] data-[state=checked]:bg-green-800 data-[state=unchecked]:bg-neutral-500"}
+                 />
+                }/>
+            )
+        }
+    },
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     header: () => <TableHeaderCell align="left">Reference</TableHeaderCell>,
     accessorKey: "reference",
     cell: ({ row }) => (
-      <TableHeaderCell align="left">{row.original.risk_id}</TableHeaderCell>
+      <TableHeaderCell align="left">
+          <Badge className={"bg-secondary text-secondary-foreground px-3"}>
+              {row.original?.risk_id}
+          </Badge>
+      </TableHeaderCell>
     ),
   },
   {
@@ -47,14 +101,15 @@ const columns: ColumnDef<ReadRiskType>[] = [
     ),
   },
   {
-    header: () => <TableHeaderCell align="center">Owners</TableHeaderCell>,
-    accessorKey: "owners",
+    header: () => <TableHeaderCell align="center">Status</TableHeaderCell>,
+    accessorKey: "status",
     cell: ({ row }) => (
       <TableHeaderCell
-        leadingIcon={<NumberBadge count={row.original.owners?.length} />}
         align="center"
         className="whitespace-break-spaces text-sm font-medium break-words"
-      />
+      >
+          {row.original.status}
+      </TableHeaderCell>
     ),
   },
   {
@@ -66,7 +121,7 @@ const columns: ColumnDef<ReadRiskType>[] = [
   },
   {
     header: () => <TableHeaderCell align="center">Likelihood</TableHeaderCell>,
-    accessorKey: "likehood",
+    accessorKey: "likelihood",
     cell: ({ row }) => (
       <TableHeaderCell align="center" leadingIcon={<NumberBadge count={row.original.inherent_likelihood} />}/>
     ),
@@ -100,7 +155,7 @@ const columns: ColumnDef<ReadRiskType>[] = [
     cell: ({ row }) => (
       <TableHeaderCell
         leadingIcon={
-          <RiskActions risk_id={row.original?.risk_id ?? ""}>
+          <RiskActions sideOffset={"0"} side={"left"} riskId={row.original?.risk_id ?? ""}>
             <Button className="h-7 w-7 bg-secondary text-secondary-foreground hover:text-neutral-200 cursor-pointer">
               <Ellipsis size={16} />
             </Button>
@@ -114,10 +169,20 @@ const columns: ColumnDef<ReadRiskType>[] = [
 
 interface RiskTableProps {
   moduleId?: string | null;
+  onSelectionChange?: (selectedIds: string[]) => void;
 }
 
-export const RiskTable = ({ moduleId }: RiskTableProps) => {
+export const RiskTable = ({ moduleId, onSelectionChange }: RiskTableProps) => {
   const {data} = useFetchAllRisks(moduleId)
+  // const sortedData: ReadRiskType[] = Array.isArray(data)
+  //     ? [...data].sort((a, b) => a.category.localeCompare(b.category))
+  //     : [];
 
-  return <BaseTable<ReadRiskType> data={data ?? []} columns={columns} />;
+
+    return <BaseTable<ReadRiskType>
+      getRowId={(row) => row?.risk_id ?? ""}
+      data={data ?? []}
+      columns={columns} height={"208"}
+      onSelectionChange={onSelectionChange}
+  />;
 };

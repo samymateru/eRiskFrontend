@@ -19,34 +19,44 @@ import {
 
 interface ActivitiesActionsProps {
   children: ReactNode;
-  activityId: string;
+  activityId?: string | null;
+  side?: "left" | "right" | "top" | "bottom";
+  sideOffset?: string
+  showView?: boolean;
 }
 
 export const ActivitiesActions = ({
   children,
   activityId,
+  side = "bottom",
+  sideOffset = "10",
+  showView = true,
 }: ActivitiesActionsProps) => {
   const pathname = usePathname();
   const router = useRouter();
   return (
     <BaseActions
       trigger={children}
-      side="left"
+      side={side}
+      sideOffset={sideOffset}
       offset={90}
       text="Activity Actions">
-      <BaseActionItem
-        onClick={() =>
-          router.push(
-            pathname +
-              `?action=activity_details&activity_id=${activityId}`
-          )
+        {showView && (
+          <BaseActionItem
+            onClick={() =>
+                router.push(
+                    pathname +
+                    `?action=activity_details&activity_id=${activityId}`
+                )
+            }
+            icon={<Eye size={16} />}
+            text="View"
+          />)
         }
-        icon={<Eye size={16} />}
-        text="View"
-      />
+
       <BaseActionItem icon={<Edit size={16} />} text="Edit" />
       <AssignActivityOwners activityId={activityId}>
-        <BaseActionItem icon={<UsersIcon size={16} />} text="Assign Leads"/>
+        <BaseActionItem icon={<UsersIcon size={16} />} text="Assign Activity Leads"/>
       </AssignActivityOwners>
       <BaseActionItem icon={<Trash size={16} />} text="Delete" />
         <NewActivityReport activityId={activityId}>

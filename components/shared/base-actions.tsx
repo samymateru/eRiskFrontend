@@ -5,7 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
 import { ReactNode } from "react";
 
 interface BaseActionsProps {
@@ -24,13 +23,12 @@ export const BaseActions = ({
   trigger,
   text = "RMP Activities",
   side = "left",
-  offset = 100,
-  sideOffset,
+  sideOffset = "0",
   tooltip,
   tooltipSide = "bottom",
 }: BaseActionsProps) => {
   return (
-    <Popover>
+    <Popover modal>
       {tooltip ? (
         <BasicTooltip show={true} text={tooltip} side={tooltipSide}>
           <PopoverTrigger asChild>{trigger}</PopoverTrigger>
@@ -40,7 +38,7 @@ export const BaseActions = ({
       )}
       <PopoverContent
         side={side}
-        className={`mt-0 w-[280px] p-0 py-2 relative left-[${sideOffset}px] top-[${offset}px] bg-secondary border-[1px] border-neutral-400 shadow-md shadow-blue-200`}
+        className={`mt-0 w-[280px] p-0 py-2 relative -left-[${sideOffset}px] bg-secondary border-[1px] border-neutral-400 shadow-md shadow-blue-200`}
         style={{
           boxShadow: "0 0 10px 2px rgba(59, 130, 246, 0.4)",
         }}>

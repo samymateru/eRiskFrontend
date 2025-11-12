@@ -1,5 +1,8 @@
 import z from "zod";
-import { UserDetailsSchema } from "./user";
+import {
+    CreatorSchema,
+    UserDetailsSchema
+} from "./user";
 
 export const NewRMPSchema = z.object({
   name: z.string().min(1, "Provide RMP Nam"),
@@ -12,8 +15,8 @@ export const ReadRMPSchema = z.object({
   name: z.string(),
   year: z.number(),
   status: z.string(),
-  creator: UserDetailsSchema,
-  approver: UserDetailsSchema,
+  creator: CreatorSchema,
+  approver: CreatorSchema,
   created_at: z.date(),
   approved_at: z.date(),
 });

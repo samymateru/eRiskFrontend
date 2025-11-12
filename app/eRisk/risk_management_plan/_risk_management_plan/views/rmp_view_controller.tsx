@@ -8,10 +8,10 @@ export const RMPViewController = () => {
   const params = useSearchParams();
   return (
     <Tabs value={params.get("action") ?? "rmp_list"}>
-      <TabsContent value="rmp_list" className="mt-0 h-full">
+      <TabsContent value="rmp_list" className="mt-0 h-full bg-white">
         <ActivitiesListView />
       </TabsContent>
-      <TabsContent value="activity_details" className="mt-0 h-full">
+      <TabsContent value="activity_details" className="mt-0 h-full bg-white">
         <ActivityDetailsView />
       </TabsContent>
     </Tabs>

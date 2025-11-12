@@ -8,6 +8,10 @@ import { UserDetails } from "@/components/shared/user-details";
 import { ReadRMPType } from "@/lib/schemas/rmp_schemas";
 import { useFetchAllRMP } from "@/lib/api/rmp_api";
 import { useLocalStorage } from "@/lib/hooks/use-localstorage";
+import {Label} from "@/components/ui/label";
+import {
+    RMPTableActions
+} from "@/app/eRisk/risk_management_plan/_risk_management_plan/components/actions/rmp_table_actions";
 
 const columns: ColumnDef<ReadRMPType>[] = [
   {
@@ -23,7 +27,8 @@ const columns: ColumnDef<ReadRMPType>[] = [
     header: () => <TableHeaderCell align="left">Status</TableHeaderCell>,
     accessorKey: "status",
     cell: ({ row }) => (
-      <TableHeaderCell align="left">{row.original.status}</TableHeaderCell>
+        <TableHeaderCell leadingIcon={<Label
+            className={`${row.original.status === "current" ? "bg-green-800": "bg-primary"} text-primary-foreground font-normal text-[13px] w-[50px] flex items-center justify-center rounded-full px-7 py-[1px]`}>{row.original.status === "current" ? "Active" : "In Active"}</Label>} align="left"/>
     ),
   },
   {
@@ -37,37 +42,52 @@ const columns: ColumnDef<ReadRMPType>[] = [
     header: () => <TableHeaderCell align="left">Creator</TableHeaderCell>,
     accessorKey: "creator",
     cell: ({ row }) => (
-      <UserDetails
-        name={row.original.creator.name}
-        email={row.original.creator.email}
-        image={row.original.creator.image}
-        showLowerSection={false}
-        isAction={false}
-      />
+        <UserDetails
+            name={row.original.creator.usr_name}
+            email={row.original.creator.usr_email}
+            image={row.original.creator.usr_image}
+            status={row.original.creator.usr_status}
+            showLowerSection={false}
+            isAction={false}
+        />
     ),
   },
   {
     header: () => <TableHeaderCell align="left">Approver</TableHeaderCell>,
     accessorKey: "approver",
-    cell: ({ row }) => (
-      <UserDetails
-        name={row.original?.approver?.name}
-        email={row.original?.approver?.email}
-        image={row.original?.approver?.image}
-        showLowerSection={false}
-        isAction={false}
-      />
-    ),
+    cell: ({ row }) => {
+        {
+            if(row.original.approver) {
+                return(
+                    <UserDetails
+                        name={row.original.approver?.usr_name}
+                        email={row.original.approver?.usr_email}
+                        image={row.original.approver?.usr_image}
+                        status={row.original.approver?.usr_status}
+                        showLowerSection={false}
+                        isAction={false}
+                    />
+                )}
+            else {
+                return(
+                    <Button className={"h-7 rounded-full text-sm font-medium"}>Approve</Button>
+                )
+            }
+        }
+  },
   },
   {
     header: () => <TableHeaderCell align="center">Actions</TableHeaderCell>,
     accessorKey: "action",
-    cell: () => (
+    cell: ({row}) => (
       <TableHeaderCell
         leadingIcon={
-          <Button className="h-7 w-7 bg-blue-500 text-secondary-foreground hover:text-neutral-200 cursor-pointer">
-            <Ellipsis size={16} />
-          </Button>
+          <RMPTableActions row={row}>
+            <Button className="h-7 w-7 bg-blue-500 text-secondary-foreground hover:text-neutral-200 cursor-pointer">
+                <Ellipsis size={16} />
+            </Button>
+          </RMPTableActions>
+
         }
         align="center"
       />

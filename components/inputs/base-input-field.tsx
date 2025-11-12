@@ -16,6 +16,7 @@ interface TextInputFieldProps<
   error?: TError;
   type?: React.HTMLInputTypeAttribute;
   className?: string;
+  onValueChange?: (value: string) => void;
 }
 
 export function BaseInputField<
@@ -30,6 +31,7 @@ export function BaseInputField<
   id,
   className = "",
 }: TextInputFieldProps<TRegister, TError>) {
+
   return (
     <div className="flex flex-col w-full">
       <section className="flex flex-col gap-2">

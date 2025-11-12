@@ -7,6 +7,9 @@ import { useForm } from "react-hook-form";
 import { NewRiskSchema, NewRiskType } from "@/lib/schemas/risk-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { APIRequestBuilder } from "@/components/forms/base-api-client";
+import {
+    useLocalStorage
+} from "@/lib/hooks/use-localstorage";
 
 type Rating = {
   impact?: number;
@@ -27,6 +30,7 @@ export const NewRisk = <TResponse,>({
 }: NewRiskProps<TResponse>) => {
   const [impact, setImpact] = useState<number>(0);
   const [likelihood, setLikelihood] = useState<number>(0);
+  const userId = useLocalStorage("user_id")
 
   const methods = useForm<NewRiskType>({
     resolver: zodResolver(NewRiskSchema),
@@ -39,7 +43,7 @@ export const NewRisk = <TResponse,>({
   });
 
   const mutationFn = async (data: NewRiskType) => {
-    return APIRequestBuilder.to<NewRiskType, TResponse>(`/risks/${moduleId}`)
+    return APIRequestBuilder.to<NewRiskType, TResponse>(`/risks/${moduleId}?user_id=${userId}`)
       .withMethod("POST")
       .withToken()
       .withBody(data)

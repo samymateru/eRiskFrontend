@@ -12,7 +12,9 @@ export const ReadRiskSchema = z.object({
   year: z.number().optional(),
   department: z.string().optional(),
   name: z.string(),
+  status: z.string(),
   description: z.string(),
+  creator: z.string().optional(),
   inherent_impact: z.number(),
   inherent_likelihood: z.number(),
   residual_impact: z.number(),
@@ -38,6 +40,12 @@ export const NewRiskOwnersSchema = z.object({
     owners: z.array(z.string())
 })
 
+export const NewBusinessOwnerSchema = z.object({
+    risk_ids: z.array(z.string())
+
+})
+
 export type NewRiskType = z.infer<typeof NewRiskSchema>;
 export type NewRiskOwnersType = z.infer<typeof NewRiskOwnersSchema>;
+export type NewBusinessOwnerType = z.infer<typeof NewBusinessOwnerSchema>;
 export type ReadRiskType = z.infer<typeof ReadRiskSchema>;

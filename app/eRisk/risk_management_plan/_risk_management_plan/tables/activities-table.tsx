@@ -98,7 +98,7 @@ const columns: ColumnDef<ReadActivityType>[] = [
     cell: ({ row }) => (
       <TableHeaderCell
         leadingIcon={
-          <ActivitiesActions activityId={row.original.activity_id ?? ""}>
+          <ActivitiesActions sideOffset={"0"} side={"left"} activityId={row.original.activity_id ?? ""}>
             <Button className="h-7 w-7 bg-secondary text-secondary-foreground hover:text-neutral-200 cursor-pointer">
               <Ellipsis size={16} />
             </Button>
@@ -119,7 +119,7 @@ export const ActivitiesTable = ({ moduleId }: ActivitiesTableProps) => {
 
   return (
     <section>
-      <BaseTable<ReadActivityType> columns={columns} data={data ?? []} />
+      <BaseTable<ReadActivityType> columns={columns} data={data ?? []} height={"205"}/>
     </section>
   );
 };

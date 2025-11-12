@@ -2,16 +2,15 @@
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import { BaseForm } from "@/components/forms/base-form";
 import { BaseInputField } from "@/components/inputs/base-input-field";
-import { Home } from "lucide-react";
 import { BaseSelectField } from "@/components/select/base-select-field";
 import { BaseTextAreaField } from "@/components/inputs/base-textarea-field";
 import { useEffect, useState } from "react";
+import {useLocalStorage} from "@/lib/hooks/use-localstorage";
 import {
-    useLocalStorage
-} from "@/lib/hooks/use-localstorage";
-import {
-    useFetchEntityProcesses
+    useFetchEntityProcesses,
+    useFetchEntityRiskCategory
 } from "@/lib/api/constants_api";
+import {departments} from "@/lib/utils/constants";
 
 
 interface NewRiskFormProps<TData extends FieldValues, TPayload, TResponse> {
@@ -37,6 +36,7 @@ export const NewRiskForm = <TData extends FieldValues, TPayload, TResponse>({
   const entityId = useLocalStorage("entity_id");
 
   const {data: process} = useFetchEntityProcesses(entityId)
+  const {data: riskCategory} = useFetchEntityRiskCategory(entityId)
 
   const [openSelect, setOpenSelect] = useState<
     null | "process" | "sub_process" | "department" | "category"
@@ -82,6 +82,11 @@ export const NewRiskForm = <TData extends FieldValues, TPayload, TResponse>({
     label: process_name,
   }));
 
+  const riskCategoryOptions = riskCategory?.map(({ risk_category }) => ({
+    value: risk_category,
+    label: risk_category,
+  }));
+
   const handleSuccess = (data: TResponse) => {
     onSuccess?.(data);
   };
@@ -89,22 +94,6 @@ export const NewRiskForm = <TData extends FieldValues, TPayload, TResponse>({
   const handleError = (error: Error) => {
     onError?.(error);
   };
-
-  const options = [
-    {
-      value: "react",
-      label: "React",
-      icon: (
-        <section className="w-2 h-2 bg-red-700 flex rounded-full"></section>
-      ),
-    },
-    { value: "next", label: "Next.js", icon: <Home color="black" size={16} /> },
-    {
-      value: "gatsby",
-      label: "Gatsby",
-      icon: <Home color="black" size={16} />,
-    },
-  ];
 
   return (
     <BaseForm<TData, TResponse, unknown>
@@ -175,7 +164,7 @@ export const NewRiskForm = <TData extends FieldValues, TPayload, TResponse>({
           className="flex-1"
           id={"department" as import("react-hook-form").Path<TData>}
           label="Department"
-          options={options}
+          options={departments}
           setValue={methods.setValue}
           error={methods.formState.errors}
           open={openSelect === "department"}
@@ -187,7 +176,7 @@ export const NewRiskForm = <TData extends FieldValues, TPayload, TResponse>({
           className="flex-1"
           id={"category" as import("react-hook-form").Path<TData>}
           label="Category"
-          options={options}
+          options={riskCategoryOptions ?? []}
           setValue={methods.setValue}
           open={openSelect === "category"}
           onOpenChange={() => handleToggle("category")}
